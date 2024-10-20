@@ -1,6 +1,3 @@
-# sensitive data
-backend/creds.py
-
 # Logs
 logs
 *.log
