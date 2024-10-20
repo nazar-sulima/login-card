@@ -1,0 +1,5 @@
+# Sensitive Data
+creds.py
+
+# Other
+__pycache__
