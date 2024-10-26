@@ -1,15 +1,33 @@
 from fastapi import FastAPI
 from mongo import MongoDB
 
-app = FastAPI()
+# fastapi dev main.py
 
-mongo = MongoDB()
+class API:
+    def __init__(self):
+        self.app = FastAPI()
+        self.mongo = MongoDB()
+        
+    def routes(self):
+        @self.app.get("/")
+        async def welcome():
+            return {"message": "Hello WOrld"}
+        
+        @self.app.get("/users")
+        async def users():
+            return self.mongo.all_users
+        
+api = API()
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+# app = FastAPI()
 
-@app.get("/users")
-async def root():
-    return mongo.all_users
+# mongo = MongoDB()
+
+# @app.get("/")
+# async def welcome():
+#     return {"message": "Hello World"}
+
+# @app.get("/users")
+# async def users():
+#     return mongo.all_users
 
