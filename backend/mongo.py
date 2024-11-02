@@ -1,4 +1,11 @@
-from creds import client
+from pymongo import MongoClient
+from dotenv import load_dotenv
+from users import users
+from os import getenv
+
+load_dotenv()
+
+client = MongoClient(getenv('MONGODB'))
 
 class MongoDB:
     def __init__(self):
@@ -17,9 +24,20 @@ class MongoDB:
     
     def find_user(self, email):
         user_info = self.users_collection.find_one({"email": email})
-        user_password = None
         if user_info:
-            user_password = user_info.get("password")
-        return user_password
-
-            
+            user_info['_id'] = str(user_info['_id'])
+            return user_info
+        
+    def update_passwords(self, email, new_password):
+        query_filter = {"email": email}
+        update_operation = {"$set": {"password": new_password}}
+        result = self.users_collection.update_many(query_filter, update_operation)
+        
+    def add_users(self, user_data):
+        self.users_collection.insert_one(user_data)
+        print("User successfuly added to the database!")
+        
+        
+    def fill_database(self):
+        self.users_collection.insert_many(users)
+        print("Database is successfuly filled with users!")

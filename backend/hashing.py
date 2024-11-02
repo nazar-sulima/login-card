@@ -1,22 +1,29 @@
 import hashlib
 from mongo import MongoDB
 
+test_email = "ethan.hunt@example.com"
+
 class PasswordHasher:
-    def __init__(self, email):
+    def __init__(self):
         self.mongo = MongoDB()
-        self.email = email
-        self.user_password = self.get_user_password()
+        self.user_password = self.get_user_password(test_email)
         
-    def get_user_password(self):
-        user_password = self.mongo.find_user(self.email)
+    def get_user_password(self, email):
+        user = self.mongo.find_user(email)
+        user_password = user['password']
         return user_password
     
-    def hash_password(self):
-        hash_object = hashlib.sha256(self.user_password.encode())  # Convert string to bytes
+    def hash_password(self, password):
+        hash_object = hashlib.sha256(password.encode()) 
         hash_hex = hash_object.hexdigest()
-        return "SHA-256 Hash:", hash_hex
+        return hash_hex
+    
+    def update_all(self):
+        users = self.mongo.find_users() 
+        for user in users:
+            users_password = user['password']
+            hashed_password = self.hash_password(users_password)
+            self.mongo.update_passwords(user['email'], hashed_password)
 
-ph = PasswordHasher("ethan.hunt@example.com")
-print("ph.get_user_password: ", ph.get_user_password())
-print(ph.hash_password())
+ph = PasswordHasher()
         

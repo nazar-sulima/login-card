@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pymongo = "*"
 fastapi = {extras = ["standard"], version = "*"}
+python-dotenv = "*"
 
 [dev-packages]
 

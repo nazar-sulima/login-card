@@ -1,5 +1,5 @@
 # Sensitive Data
-creds.py
+.env
 
 # Other
-__pycache__
+__pycache__/
