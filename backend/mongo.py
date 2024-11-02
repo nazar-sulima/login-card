@@ -12,7 +12,6 @@ class MongoDB:
         self.db = client['login-card']
         self.users_collection = self.db['users']
         self.all_users = self.find_users()
-        # self.user_password = self.find_user()
         
     def find_users(self):
         users_cursor = self.users_collection.find({})
@@ -33,7 +32,7 @@ class MongoDB:
         update_operation = {"$set": {"password": new_password}}
         result = self.users_collection.update_many(query_filter, update_operation)
         
-    def add_users(self, user_data):
+    def add_user(self, user_data):
         self.users_collection.insert_one(user_data)
         print("User successfuly added to the database!")
         

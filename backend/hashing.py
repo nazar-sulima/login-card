@@ -24,6 +24,3 @@ class PasswordHasher:
             users_password = user['password']
             hashed_password = self.hash_password(users_password)
             self.mongo.update_passwords(user['email'], hashed_password)
-
-ph = PasswordHasher()
-        

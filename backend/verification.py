@@ -12,17 +12,12 @@ class UserVerification:
         self.mongo = MongoDB()
         self.hasher = PasswordHasher()
         
-    def login_user(self, email, password):
+    def login(self, email, password):
         user = self.mongo.find_user(email)
-        print(user)
         hashed_password = self.hasher.hash_password(password)
-        print(hashed_password)
         
         if user['email'] == email and user['password'] == hashed_password:
-            print("User found in database!")
+            return True
             
         else:
-            print("User is not in database. Please register")
-            
-uv = UserVerification()
-uv.login_user(test_user["email"], test_user["password"])
+            return False

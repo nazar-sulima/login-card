@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
 from mongo import MongoDB
-from pydantic import BaseModel
 from verification import UserVerification
+from hashing import PasswordHasher
+from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
 
 # fastapi dev main.py
 
@@ -15,6 +16,7 @@ class API:
         self.app = FastAPI()
         self.mongo = MongoDB()
         self.verification = UserVerification()
+        self.hasher = PasswordHasher()
         
     def set_routes(self):
         @self.app.get("/")
@@ -27,13 +29,26 @@ class API:
         
         @self.app.post("/login")
         def login(item: Item):
-            user = self.verification.login_user(item.email, item.password)
-            return user
-            # return {
-            #     "full_name": item.full_name,
-            #     "email": item.email,
-            #     "password": item.password
-            # }
+            user = self.verification.login(item.email, item.password)
+            if user == True:
+                return "Success"
+            else:
+                raise HTTPException(status_code=400, detail="Invalid email or password.")
+            
+        @self.app.post("/register")
+        def register(item: Item):
+            if self.mongo.find_user(item.email):
+                raise HTTPException(status_code=400, detail="User already exists")
+            else:
+                hashed_password = self.hasher.hash_password(item.password)
+                user_data = {
+                    "full_name": item.full_name,
+                    "email": item.email,
+                    "password": hashed_password
+                }
+                
+                self.mongo.add_user(user_data)
+                return "Success"
         
 api = API()
 app = api.app
