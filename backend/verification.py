@@ -18,6 +18,5 @@ class UserVerification:
         
         if user['email'] == email and user['password'] == hashed_password:
             return True
-            
         else:
             return False

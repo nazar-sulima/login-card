@@ -5,8 +5,13 @@ name = "pypi"
 
 [packages]
 pymongo = "*"
-fastapi = {extras = ["standard"], version = "*"}
+fastapi = {extras = ["standard"] }
 python-dotenv = "*"
+google-auth = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
+requests = "*"
 
 [dev-packages]
 

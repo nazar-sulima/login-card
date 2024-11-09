@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from users import users
 from os import getenv
 
 load_dotenv()
@@ -27,16 +26,6 @@ class MongoDB:
             user_info['_id'] = str(user_info['_id'])
             return user_info
         
-    def update_passwords(self, email, new_password):
-        query_filter = {"email": email}
-        update_operation = {"$set": {"password": new_password}}
-        result = self.users_collection.update_many(query_filter, update_operation)
-        
     def add_user(self, user_data):
         self.users_collection.insert_one(user_data)
         print("User successfuly added to the database!")
-        
-        
-    def fill_database(self):
-        self.users_collection.insert_many(users)
-        print("Database is successfuly filled with users!")
