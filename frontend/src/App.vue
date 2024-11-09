@@ -1,23 +1,15 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
 import Test from './components/Test.vue'
 import Project from './Project.vue';
 </script>
 
 <template>
   <header>
-    
-
-    <div class="wrapper">
-      <!-- <HelloWorld msg="You did it!" /> -->
-    </div>
-    <div>
-      <Project/>
-    </div>
+    <Project />
   </header>
-
+  
   <main>
-    
+
     <Test />
   </main>
 </template>
