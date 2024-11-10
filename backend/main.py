@@ -24,7 +24,7 @@ USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 class Item(BaseModel):
     full_name: str
     email: str
-    password: str
+    password: str = None
 
 class API:
     def __init__(self):
@@ -39,7 +39,7 @@ class API:
     def set_routes(self):
         @self.app.get("/")
         def welcome():
-            return {"message": "Hello WOrld"}
+            return {"message": "Welcome here!"}
         
         @self.app.get("/users")
         def users():
@@ -84,7 +84,6 @@ class API:
             if not code:
                 raise HTTPException(status_code=400, detail="Authorization code not provided.")
 
-            # Exchange authorization code for access token
             token_data = {
                 "code": code,
                 "client_id": self.client_id,
@@ -94,21 +93,32 @@ class API:
             }
 
             response = requests.post(TOKEN_URL, data=token_data)
-            # async with httpx.AsyncClient() as client:
-            #     response = await client.post(TOKEN_URL, data=token_data)
             token_info = response.json()
 
-            # Use access token to get user info
             access_token = token_info.get("access_token")
-            # idinfo = id_token.verify_oauth2_token(access_token, GoogleRequest(), getenv("CLIENT_ID"))
             userinfo_response = requests.get(
                 "https://www.googleapis.com/oauth2/v3/userinfo",
                 headers={"Authorization": f"Bearer {access_token}"}
             )
             userinfo = userinfo_response.json()
+            
+            print(userinfo)
+            
+            email = userinfo.get("email")
+            name = userinfo.get("name")
+            
+            existing_user = self.mongo.find_user(email)
+            if existing_user:
+                return {"User already exists, logging in"}
+            else:
+                user_data = {
+                    "full_name": name,
+                    "email": email,
+                    "password": None
+                }
+                self.mongo.add_user(user_data)
+                return {"User is successfuly registered"}
 
-            # return {"email": idinfo.get("email"), "name": idinfo.get("name")}
-            return {"email": userinfo.get("email"), "name": userinfo.get("name")}
             
             
         
