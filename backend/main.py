@@ -7,6 +7,7 @@ from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from os import getenv
 import requests
+from starlette.middleware.cors import CORSMiddleware
 
 # * GOOGLE
 from google.auth.transport.requests import Request as GoogleRequest
@@ -35,6 +36,19 @@ class API:
         self.client_id = getenv("CLIENT_ID")
         self.client_secret = getenv("CLIENT_SECRET")
         self.redirect_uri = getenv("REDIRECT_URI")
+        
+    def set_middleware(self):
+        origins = [
+            "http://localhost:5173", "http://127.0.0.1:5173"
+        ]
+        
+        self.app.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,  # List of allowed origins
+            allow_credentials=True,  # Allow cookies or credentials
+            allow_methods=["GET", "POST"],  # Allow specific HTTP methods
+            allow_headers=["*"],  # Allow any headers (you can restrict this too if needed)
+        )
         
     def set_routes(self):
         @self.app.get("/")
@@ -119,9 +133,7 @@ class API:
                 self.mongo.add_user(user_data)
                 return {"User is successfuly registered"}
 
-            
-            
-        
 api = API()
 app = api.app
+api.set_middleware()
 api.set_routes()
