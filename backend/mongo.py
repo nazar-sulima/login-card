@@ -28,4 +28,3 @@ class MongoDB:
         
     def add_user(self, user_data):
         self.users_collection.insert_one(user_data)
-        print("User successfuly added to the database!")

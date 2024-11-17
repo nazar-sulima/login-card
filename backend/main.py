@@ -1,17 +1,22 @@
+# * Other files
 from mongo import MongoDB
 from verification import UserVerification
 from hashing import PasswordHasher
-from pydantic import BaseModel
+
+# * FastAPI
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import RedirectResponse
-from dotenv import load_dotenv
-from os import getenv
-import requests
-from starlette.middleware.cors import CORSMiddleware
 
 # * GOOGLE
 from google.auth.transport.requests import Request as GoogleRequest
 from google.oauth2 import id_token
+
+# * Others
+import requests
+from os import getenv
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from starlette.middleware.cors import CORSMiddleware
 
 # fastapi dev main.py
 
@@ -44,10 +49,10 @@ class API:
         
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins=origins,  # List of allowed origins
-            allow_credentials=True,  # Allow cookies or credentials
-            allow_methods=["GET", "POST"],  # Allow specific HTTP methods
-            allow_headers=["*"],  # Allow any headers (you can restrict this too if needed)
+            allow_origins=origins,
+            allow_credentials=True,
+            allow_methods=["GET", "POST"],
+            allow_headers=["*"]
         )
         
     def set_routes(self):
@@ -86,14 +91,10 @@ class API:
         @self.app.get("/google/login")
         def google_login():
             redirect_uri = f"{AUTHORIZATION_URL}?client_id={self.client_id}&response_type=code&redirect_uri={self.redirect_uri}&scope=email profile"
-            print("🐍 File: backend/main.py | Line: 74 | google_login ~ redirect_uri",redirect_uri)
-            print(RedirectResponse(redirect_uri))
             return RedirectResponse(redirect_uri)
         
         @self.app.get("/auth/callback")
         async def auth_callback(request: Request):
-            print("Request: ", vars(request))
-            print("\nApp: ", vars(request['app']))
             code = request.query_params.get("code")
             if not code:
                 raise HTTPException(status_code=400, detail="Authorization code not provided.")

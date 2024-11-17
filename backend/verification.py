@@ -1,12 +1,6 @@
 from mongo import MongoDB
 from hashing import PasswordHasher
 
-test_user = {
-    "full_name": "Alice Johnson",
-    "email": "alice.johnson@example.com",
-    "password": "password123"
-}
-
 class UserVerification:
     def __init__(self):
         self.mongo = MongoDB()
