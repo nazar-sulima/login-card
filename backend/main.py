@@ -28,8 +28,8 @@ TOKEN_URL = "https://oauth2.googleapis.com/token"
 USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 class Item(BaseModel):
-    full_name: str
-    email: str
+    full_name: str = None
+    email: str = None
     password: str = None
 
 class API:
@@ -68,7 +68,7 @@ class API:
         def login(item: Item):
             user = self.verification.login(item.email, item.password)
             if user == True:
-                return "Success"
+                return {"detail": "User found in the db, logging in..."}
             else:
                 raise HTTPException(status_code=400, detail="Invalid email or password.")
             
@@ -85,7 +85,7 @@ class API:
                 }
                 
                 self.mongo.add_user(user_data)
-                return "Success"
+                return {"detail": "User is successfuly registered!"}
             
         # * GOOGLE LOGIN
         @self.app.get("/google/login")
@@ -124,7 +124,7 @@ class API:
             
             existing_user = self.mongo.find_user(email)
             if existing_user:
-                return {"User already exists, logging in"}
+                return {"detail": "User already exists, logging in"}
             else:
                 user_data = {
                     "full_name": name,
@@ -132,7 +132,7 @@ class API:
                     "password": None
                 }
                 self.mongo.add_user(user_data)
-                return {"User is successfuly registered"}
+                return {"detail": "User is successfuly registered through Google"}
 
 api = API()
 app = api.app
