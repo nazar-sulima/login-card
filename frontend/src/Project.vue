@@ -1,6 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
+let fullName = "Your Full Name"
+let emailAdress = "Your Email Address"
+let password = ref("Your Password")
+console.log("🚀 ~ password:", password.value)
+
+// const reversedStr = password.split('').reverse().join('');
+// console.log("🚀 ~ reversedStr:", reversedStr)
+
 
 // let circle = document.querySelector('.circle')
 // circle.onclick = () => {
@@ -37,6 +45,119 @@ function switcher() {
 
 }
 
+function validateEmail(email) {
+    let emailRegex = /\w+@gmail\.com/gm
+    console.log(emailRegex.test(email));
+
+}
+
+
+
+onMounted(() => {
+    let formSignUp = document.querySelector('.form')
+    console.log("🚀 ~ form:", formSignUp)
+    let formLogIn = document.querySelector('.form-back')
+    console.log("🚀 ~ onMounted ~ formBack:", formLogIn)
+
+
+
+
+    formSignUp.onsubmit = async function (event) {
+        event.preventDefault();
+
+        /* работа с DOM */
+
+        // const newNameInput = document.querySelector("#new-name");
+        // console.log('- newNameInput -', newNameInput);
+
+        // let value = newNameInput.placeholder;
+        // console.log('- value -', value);
+
+
+        const newName = document.getElementById('new-name').value
+        console.log("🚀 ~ submitForm ~ newName:", newName)
+
+        const newEmail = document.getElementById('new-email').value
+        console.log("🚀 ~ submitForm ~ newEmail:", newEmail)
+
+        const newPassword = document.getElementById('new-password').value
+        console.log("🚀 ~ submitForm ~ newPassword:", newPassword)
+
+        try {
+            let response = await fetch('http://127.0.0.1:8000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    full_name: newName,
+                    email: newEmail,
+                    password: newPassword,
+                }),
+            });
+
+            let result = await response.json()
+            console.log("🚀 Sign-up successful:", result)
+        }
+        catch (error) {
+            console.log(error.message);
+        }
+
+    }
+
+    formLogIn.onsubmit = async function (event) {
+
+        event.preventDefault();
+
+        const email = document.getElementById('email').value
+        console.log("🚀 ~ onMounted ~ email:", email)
+        validateEmail()
+
+        const password = document.getElementById('password').value
+        console.log("🚀 ~ onMounted ~ password:", password)
+
+        try {
+            let response = await fetch('http://127.0.0.1:8000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            let result = await response.json()
+            console.log("🚀 Log-in successful:", result)
+
+        }
+        catch (error) {
+            console.log(error.message);
+        }
+
+    }
+
+});
+
+
+async function getData(url) {
+    try {
+        let response = await fetch(url)
+        let data = await response.json()
+        console.log("🚀 ~ getData ~ data:", data)
+
+        return data
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+
+}
+
+getData('http://127.0.0.1:8000/users')
+
+
 
 
 
@@ -48,7 +169,7 @@ function switcher() {
             <div class="col text-center py-5">
                 <div class="main">
                     <h4 class="px-3">
-                        <span class="px3">Sing in</span><span class="px-3">Log in</span>
+                        <span class="px3">Sing up</span><span class="px-3">Log in</span>
                     </h4>
 
                     <section class="switch d-flex justify-content-center py-3">
@@ -70,42 +191,44 @@ function switcher() {
                     <div class="card card-front mx-auto">
                         <div class="section mb-3">
 
-                            <h5 class="mt-3">Sing in</h5>
-                            <form class="mt-3">
+                            <h5 class="mt-3">Sing up</h5>
+                            <form class="form mt-3">
                                 <div class="mb-3 mx-3">
-                                    <label for="exampleInputEmail1" class="form-label">Your Full Name</label>
-                                    <input type="Full name" placeholder="Full name" class="form-control"
-                                        id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <label for="exampleInputEmail1" class="form-label">{{ fullName }}</label>
+                                    <input type="Full name" placeholder="Full name" class="form-control" id="new-name"
+                                        aria-describedby="emailHelp">
 
                                     <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone
                                         else.
                                     </div> -->
                                 </div>
                                 <div class="mb-3 mx-3">
-                                    <label for="exampleInputPassword1" class="form-label">Your Email Address</label>
+                                    <label for="exampleInputPassword1" class="form-label">{{ emailAdress }}</label>
                                     <input type="Email adress" placeholder="Email Address" class="form-control"
-                                        id="exampleInputPassword1">
+                                        id="new-email">
                                 </div>
                                 <div class="mb-3 mx-3">
-                                    <label for="exampleInputPassword1" class="form-label">Your Password</label>
+                                    <label for="exampleInputPassword1" class="form-label">{{
+                                        password.split('').reverse().join('') }}</label>
                                     <input type="Password" placeholder="Password" class="form-control"
-                                        id="exampleInputPassword1">
+                                        id="new-password">
                                 </div>
 
-                                <div id="g_id_onload"
+                                <!-- Маршрутизатор Google кнопки -->
+                                <!-- <div id="g_id_onload"
                                     data-client_id="220369524095-ronkp3q52co9g90dvs9bm7l522bgsj6a.apps.googleusercontent.com"
                                     data-context="signin" data-ux_mode="redirect" data-login_uri="http://localhost:8000"
                                     data-itp_support="true">
-                                </div>
+                                </div> -->
 
-
-                                <section class="d-flex justify-content-center mb-3">
+                                <!-- Google кнопка -->
+                                <!-- <section class="d-flex justify-content-center mb-3">
 
                                     <div class="g_id_signin text-center" data-type="standard" data-shape="rectangular"
                                         data-theme="filled_blue" data-text="signin_with" data-size="large"
                                         data-locale="uk" data-logo_alignment="left">
                                     </div>
-                                </section>
+                                </section> -->
 
 
                                 <!-- <p>
@@ -125,11 +248,11 @@ function switcher() {
                     <div class="card card-back mx-auto">
                         <div class="section mb-3">
                             <h4 class="my-3">Log in</h4>
-                            <form>
+                            <form class="form-back">
                                 <div class="mb-3 mx-3">
                                     <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                    <input type="email" placeholder="Email address" class="form-control"
-                                        id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <input type="email" placeholder="Email address" class="form-control" id="email"
+                                        aria-describedby="emailHelp">
                                     <!-- <div id="emailHelp" class="form-text">We'll never share your email with
                                                 anyone
                                                 else.
@@ -137,17 +260,17 @@ function switcher() {
                                 </div>
                                 <div class="mb-3 mx-3">
                                     <label for="exampleInputPassword1" class="form-label">Password</label>
-                                    <input type="password" placeholder="Password" class="form-control"
-                                        id="exampleInputPassword1">
+                                    <input type="password" placeholder="Password" class="form-control" id="password">
                                 </div>
 
-                                <section class="d-flex justify-content-center mb-3">
+                                <!-- Google кнопка -->
+                                <!-- <section class="d-flex justify-content-center mb-3">
 
                                     <div class="g_id_signin text-center" data-type="standard" data-shape="rectangular"
                                         data-theme="filled_blue" data-text="signin_with" data-size="large"
                                         data-locale="uk" data-logo_alignment="left">
                                     </div>
-                                </section>
+                                </section> -->
 
                                 <button type="submit" class="btn btn-primary">Submit</button>
                                 <p class="mb-0 mt-4 text-center">

@@ -4,6 +4,9 @@ let userName = "Yaroslav";
 
 <template>
     <h1 class="display-3 text-center mt-5">Welcom back, {{ userName }}</h1>
+
+    
+    
     <a href="https://front.codes/" class="logo" target="_blank">
         <img src="https://assets.codepen.io/1462889/fcy.png" alt="">
     </a>
