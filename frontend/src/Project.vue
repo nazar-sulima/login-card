@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
 let fullName = "Your Full Name"
@@ -15,6 +15,8 @@ console.log("🚀 ~ password:", password.value)
 //     circle.classList.add(".circle-right")
 // }
 
+// посмотреть типы ts
+
 
 
 onMounted(() => {
@@ -29,16 +31,16 @@ onMounted(() => {
 
 function switcher() {
     let cardFront = document.querySelector('.card-front')
-    console.log("🚀 ~ switcher ~ cardFront:", cardFront)
+    // console.log("🚀 ~ switcher ~ cardFront:", cardFront)
 
     let cardBack = document.querySelector('.card-back')
-    console.log("🚀 ~ switcher ~ cardBack:", cardBack)
+    // console.log("🚀 ~ switcher ~ cardBack:", cardBack)
 
     cardFront.classList.toggle('hide');
     cardBack.classList.toggle('show');
 
     let circle = document.querySelector('.circle')
-    console.log("🚀 ~ switcher ~ circle:", circle)
+    // console.log("🚀 ~ switcher ~ circle:", circle)
     circle.classList.toggle('circle-right')
 
     /* дописываем логику дальше здесь */
@@ -46,18 +48,42 @@ function switcher() {
 }
 
 function validateEmail(email) {
-    let emailRegex = /\w+@gmail\.com/gm
-    console.log(emailRegex.test(email));
+    console.log("🚀 ~ validateEmail ~ email:", email)
+    let emailRegex = /\w+@gmail\.com/gm;
+
+    let checkResult = emailRegex.test(email)
+    console.log("🚀 checkResult (validateEmail):", checkResult)
+
+    return checkResult;
 
 }
 
 
+function validatePassword(password: string) {
+    // let test = password.length;
+
+    // console.log('- password -', password);
+    // console.log('- password -', typeof password);
+    
+    // console.log(password.length >= 8)
+    return password.length >= 8;
+}
+
+function validateName(name) {
+    let nameRegex = /^[^\d]+$/;
+
+    let checkResultNamme = nameRegex.test(name)
+    console.log("🚀 ~ validateName ~ checkResultNamme:", checkResultNamme)
+
+    return checkResultNamme;
+}
+
 
 onMounted(() => {
     let formSignUp = document.querySelector('.form')
-    console.log("🚀 ~ form:", formSignUp)
+    // console.log("🚀 ~ form:", formSignUp)
     let formLogIn = document.querySelector('.form-back')
-    console.log("🚀 ~ onMounted ~ formBack:", formLogIn)
+    // console.log("🚀 ~ onMounted ~ formBack:", formLogIn)
 
 
 
@@ -75,33 +101,83 @@ onMounted(() => {
 
 
         const newName = document.getElementById('new-name').value
-        console.log("🚀 ~ submitForm ~ newName:", newName)
+        // console.log("🚀 ~ submitForm ~ newName:", newName)
 
         const newEmail = document.getElementById('new-email').value
-        console.log("🚀 ~ submitForm ~ newEmail:", newEmail)
+        // console.log("🚀 ~ submitForm ~ newEmail:", newEmail)
 
         const newPassword = document.getElementById('new-password').value
-        console.log("🚀 ~ submitForm ~ newPassword:", newPassword)
+        // console.log("🚀 ~ submitForm ~ newPassword:", newPassword)
 
-        try {
-            let response = await fetch('http://127.0.0.1:8000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    full_name: newName,
-                    email: newEmail,
-                    password: newPassword,
-                }),
-            });
+        let newNameInput = document.querySelector('.new-name-input')
+        // console.log("🚀 ~ newNameInput:", newNameInput)
 
-            let result = await response.json()
-            console.log("🚀 Sign-up successful:", result)
+        let newPasswordInput = document.querySelector('.new-password-input')
+        // console.log("🚀 ~ newPasswordInput:", newPasswordInput)
+
+        let newEmailInput = document.querySelector('.new-email-input')
+        // console.log("🚀 ~ newEmailInput:", newEmailInput)
+
+
+        let nameCheck = validateName(newName);
+        console.log('- nameCheck -', nameCheck);
+
+        let passwordCheck = validatePassword(newPassword);
+        console.log("🚀 ~ passwordCheck:", passwordCheck);
+
+        let emailCheck = validateEmail(newEmail);
+        console.log("🚀 ~ emailCheck:", emailCheck);
+
+
+        // validateEmail(newEmail)
+        // validatePassword(newPassword)
+
+
+        if (nameCheck == true) {
+            console.log('done');
+            newNameInput.classList.remove('input-switcher')
         }
-        catch (error) {
-            console.log(error.message);
+        else {
+            newNameInput.classList.add('input-switcher')
         }
+
+        if (passwordCheck == true) {
+            console.log('done');
+            newPasswordInput.classList.remove('input-switcher')
+        }
+        else {
+            newPasswordInput.classList.add('input-switcher')
+        }
+
+        if (emailCheck == true) {
+            console.log('done');
+            newEmailInput.classList.remove('input-switcher')
+        }
+        else {
+            newEmailInput.classList.add('input-switcher')
+        }
+
+
+
+        // try {
+        //     let response = await fetch('http://127.0.0.1:8000/register', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({
+        //             full_name: newName,
+        //             email: newEmail,
+        //             password: newPassword,
+        //         }),
+        //     });
+
+        //     let result = await response.json()
+        //     console.log("🚀 Sign-up successful:", result)
+        // }
+        // catch (error) {
+        //     console.log(error.message);
+        // }
 
     }
 
@@ -111,30 +187,29 @@ onMounted(() => {
 
         const email = document.getElementById('email').value
         console.log("🚀 ~ onMounted ~ email:", email)
-        validateEmail()
 
         const password = document.getElementById('password').value
         console.log("🚀 ~ onMounted ~ password:", password)
 
-        try {
-            let response = await fetch('http://127.0.0.1:8000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-            });
+        // try {
+        //     let response = await fetch('http://127.0.0.1:8000/login', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({
+        //             email: email,
+        //             password: password,
+        //         }),
+        //     });
 
-            let result = await response.json()
-            console.log("🚀 Log-in successful:", result)
+        //     let result = await response.json()
+        //     console.log("🚀 Log-in successful:", result)
 
-        }
-        catch (error) {
-            console.log(error.message);
-        }
+        // }
+        // catch (error) {
+        //     console.log(error.message);
+        // }
 
     }
 
@@ -169,7 +244,7 @@ getData('http://127.0.0.1:8000/users')
             <div class="col text-center py-5">
                 <div class="main">
                     <h4 class="px-3">
-                        <span class="px3">Sing up</span><span class="px-3">Log in</span>
+                        <span class="px3">Sign up</span><span class="px-3">Log in</span>
                     </h4>
 
                     <section class="switch d-flex justify-content-center py-3">
@@ -191,12 +266,17 @@ getData('http://127.0.0.1:8000/users')
                     <div class="card card-front mx-auto">
                         <div class="section mb-3">
 
-                            <h5 class="mt-3">Sing up</h5>
+                            <h5 class="mt-3">Sign up</h5>
                             <form class="form mt-3">
                                 <div class="mb-3 mx-3">
                                     <label for="exampleInputEmail1" class="form-label">{{ fullName }}</label>
-                                    <input type="Full name" placeholder="Full name" class="form-control" id="new-name"
-                                        aria-describedby="emailHelp">
+                                    <input type="Full name" placeholder="Full name" class="new-name-input form-control"
+                                        id="new-name" aria-describedby="emailHelp">
+
+
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
 
                                     <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone
                                         else.
@@ -204,14 +284,14 @@ getData('http://127.0.0.1:8000/users')
                                 </div>
                                 <div class="mb-3 mx-3">
                                     <label for="exampleInputPassword1" class="form-label">{{ emailAdress }}</label>
-                                    <input type="Email adress" placeholder="Email Address" class="form-control"
-                                        id="new-email">
+                                    <input type="Email adress" placeholder="Email Address"
+                                        class="new-email-input form-control" id="new-email">
                                 </div>
                                 <div class="mb-3 mx-3">
                                     <label for="exampleInputPassword1" class="form-label">{{
                                         password.split('').reverse().join('') }}</label>
-                                    <input type="Password" placeholder="Password" class="form-control"
-                                        id="new-password">
+                                    <input type="Password" placeholder="Password"
+                                        class="new-password-input form-control" id="new-password">
                                 </div>
 
                                 <!-- Маршрутизатор Google кнопки -->
@@ -293,7 +373,10 @@ getData('http://127.0.0.1:8000/users')
 }
 
 
-
+.input-switcher {
+    border-color: rgb(211, 21, 21);
+    box-shadow: rgba(240, 10, 21, 0.25) 0px 0px 0px 0.25rem;
+}
 
 .switch .rectangle {
     --height: 30px;
