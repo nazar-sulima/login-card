@@ -16,7 +16,7 @@ import requests
 from os import getenv
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 # fastapi dev main.py
 
@@ -51,7 +51,7 @@ class API:
             CORSMiddleware,
             allow_origins=origins,
             allow_credentials=True,
-            allow_methods=["GET", "POST"],
+            allow_methods=["GET", "POST", "OPTIONS"],
             allow_headers=["*"]
         )
         
